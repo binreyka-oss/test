@@ -1,17 +1,20 @@
-/* Кастомные мелочи поверх Tailwind */
+
+/* Базовые мелочи */
 html, body, #root { height: 100%; }
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+button:focus { outline: none; }
 
-/* Фикс для плавности модалок на iOS/старых браузерах */
-.backdrop-blur { -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
-
-/* Лёгкий рендеринг текста */
-body {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Контейнер карты берёт всю высоту карточки */
+/* Карта заполняет контейнер */
 .map-card .leaflet-container { height: 100%; width: 100%; }
 
-/* Убираем синий обвод фокуса на кнопках в некоторых браузерах */
-button:focus { outline: none; }
+/* Оверлей ошибок (чтобы не было "просто белый экран") */
+#error-overlay {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  white-space: pre-wrap;
+  background: #fff1f2;
+  color: #7f1d1d;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px;
+}
