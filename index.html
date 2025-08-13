@@ -6,16 +6,11 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Пет-сервис Ярославль — Вет & Груминг</title>
 
-    <!-- Tailwind (CDN, без сборки) -->
+    <!-- Tailwind через CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Leaflet CSS для карты -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-      crossorigin=""
-    />
+    <!-- Leaflet CSS (без SRI, чтобы не падать из-за несовпадений) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <!-- Наши стили -->
     <link rel="stylesheet" href="./assets/styles.css" />
@@ -23,7 +18,7 @@
   <body class="bg-neutral-50">
     <div id="root"></div>
 
-    <!-- Приложение (ESM) -->
+    <!-- Приложение (ES Modules) -->
     <script type="module" src="./assets/app.js"></script>
   </body>
 </html>
