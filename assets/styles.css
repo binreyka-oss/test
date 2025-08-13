@@ -1,0 +1,17 @@
+/* Кастомные мелочи поверх Tailwind */
+html, body, #root { height: 100%; }
+
+/* Фикс для плавности модалок на iOS/старых браузерах */
+.backdrop-blur { -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+
+/* Лёгкий рендеринг текста */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Контейнер карты берёт всю высоту карточки */
+.map-card .leaflet-container { height: 100%; width: 100%; }
+
+/* Убираем синий обвод фокуса на кнопках в некоторых браузерах */
+button:focus { outline: none; }
