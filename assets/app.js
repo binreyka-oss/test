@@ -1,29 +1,43 @@
-// === Импорты как ES-модули с CDN (esm.sh) ===
+// ===== Небольшой оверлей ошибок вместо "белого экрана" =====
+function showErrorOverlay(err) {
+  const root = document.getElementById('root');
+  if (!root) return;
+  root.innerHTML = '';
+  const box = document.createElement('div');
+  box.id = 'error-overlay';
+  box.textContent = `Ошибка: ${err && (err.stack || err.message) ? (err.stack || err.message) : String(err)}`;
+  root.appendChild(box);
+}
+window.addEventListener('error', (e) => showErrorOverlay(e.error || e.message));
+window.addEventListener('unhandledrejection', (e) => showErrorOverlay(e.reason));
+
+// ===== Импорты из CDN как ESM (с явными deps чтобы не ломалось) =====
 import React from 'https://esm.sh/react@18';
 import { createRoot } from 'https://esm.sh/react-dom@18/client';
 import htm from 'https://esm.sh/htm@3?deps=react@18';
 
-import { motion, AnimatePresence } from 'https://esm.sh/framer-motion@11?external=react,react-dom';
+// Не external — пусть esm.sh подтянет зависимости и jsx-runtime сам
+import { motion, AnimatePresence } from 'https://esm.sh/framer-motion@11?deps=react@18,react-dom@18';
 import {
   Search, MapPin, Star, Scissors, Stethoscope, Clock, Calendar, Phone,
   Upload, Download, Plus, X, CheckCircle2
-} from 'https://esm.sh/lucide-react@latest?external=react';
+} from 'https://esm.sh/lucide-react@0.451.0?deps=react@18';
 
+// react-leaflet вместе с leaflet как deps
 import {
   MapContainer, TileLayer, CircleMarker, Popup
 } from 'https://esm.sh/react-leaflet@4?deps=react@18,react-dom@18,leaflet@1.9.4';
 
+// Leaflet JS (для корректной инициализации окружения, иконок и т.п.)
+import 'https://esm.sh/leaflet@1.9.4';
+
 import Papa from 'https://esm.sh/papaparse@5';
 
-// htm-привязка для удобного JSX-подобного синтаксиса без сборки
+// htm-привязка под React без JSX/бандлера
 const html = htm.bind(React.createElement);
 const { useMemo, useState } = React;
 
-// ===== Типоподобные комментарии для читабельности =====
-// District: "Дзержинский" | "Заволжский" | "Кировский" | "Красноперекопский" | "Ленинский" | "Фрунзенский" | "Другой"
-// ProviderType: "vet" | "grooming"
-
-// ===== Данные демо =====
+/** ==== Демо-данные ==== */
 const SAMPLE_PROVIDERS = [
   {
     id: "p1",
@@ -82,7 +96,7 @@ const SAMPLE_PROVIDERS = [
   },
 ];
 
-// ===== Утилиты =====
+/** ==== Утилиты ==== */
 const currency = (n) =>
   typeof n === "number"
     ? new Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB" }).format(n)
@@ -131,7 +145,7 @@ function formatDateTime(iso) {
   });
 }
 
-// ===== Корневой компонент =====
+/** ==== Приложение ==== */
 function App() {
   const [providers, setProviders] = useState(SAMPLE_PROVIDERS);
   const [query, setQuery] = useState("");
@@ -184,7 +198,6 @@ function App() {
     return list;
   }, [providers, query, type, districtFilter, openNowOnly, is247, homeVisit, sortBy]);
 
-  // Импорт/экспорт
   function importJSON(file) {
     const reader = new FileReader();
     reader.onload = () => {
@@ -286,7 +299,7 @@ function App() {
       "\"Комплекс малые породы:1200-2200; Стрижка когтей:300-500\"",
       "\"2025-08-14T11:00:00|2025-08-14T15:30:00\""
     ].join(",");
-    const csv = [header, row1, row2].join("\n"); // фикс
+    const csv = [header, row1, row2].join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -308,10 +321,9 @@ function App() {
     URL.revokeObjectURL(url);
   }
 
-  // ===== Рендер =====
   return html`
     <div className="min-h-screen bg-neutral-50">
-      <header className="sticky top-0 z-20 bg-white/80 backdrop-blur border-b">
+      <header className="sticky top-0 z-20 bg-white/80 border-b">
         <div className="mx-auto max-w-7xl px-4 py-3 flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="size-9 rounded-2xl bg-black text-white grid place-items-center">
@@ -591,7 +603,6 @@ function App() {
   `;
 }
 
-// Простейшая форма добавления
 function SimpleAddForm({ onAdd }) {
   const [name, setName] = useState("");
   const [type, setType] = useState("vet");
@@ -667,5 +678,9 @@ function SimpleAddForm({ onAdd }) {
   `;
 }
 
-// Монтируем приложение
-createRoot(document.getElementById('root')).render(html`<${React.StrictMode}><${App} /></${React.StrictMode}>`);
+// Монтаж приложения
+try {
+  createRoot(document.getElementById('root')).render(html`<${React.StrictMode}><${App} /></${React.StrictMode}>`);
+} catch (err) {
+  showErrorOverlay(err);
+}
